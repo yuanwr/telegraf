@@ -282,6 +282,33 @@ func init() {
 
 ```
 
+## Output Plugins Writing Arbitrary Data Formats
+
+Some output plugins (such as
+[file](https://github.com/influxdata/telegraf/tree/master/plugins/outputs/file))
+can write arbitrary output data formats. An overview of these data formats can
+be found
+[here](https://github.com/influxdata/telegraf/blob/master/DATA_FORMATS_OUTPUT.md).
+
+In order to enable this, you must specify a
+`SetSerializer(serializer serializers.Serializer)`
+function on the plugin object (see the file plugin for an example), as well as
+defining `serializer` as a field of the object.
+
+You can then utilize the serializer internally in your plugin, serializing data
+before it's written. Telegraf's configuration layer will take care of
+instantiating and creating the `Serializer` object.
+
+You should also add the following to your SampleConfig() return:
+
+```toml
+  ### Data format to output. This can be "influx" or "graphite"
+  ### Each data format has it's own unique set of configuration options, read
+  ### more about them here:
+  ### https://github.com/influxdata/telegraf/blob/master/DATA_FORMATS_OUTPUT.md
+  data_format = "influx"
+```
+
 ## Service Output Plugins
 
 This section is for developers who want to create new "service" output. A
